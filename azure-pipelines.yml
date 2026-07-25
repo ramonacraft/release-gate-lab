@@ -1,0 +1,188 @@
+# Release Gate Lab — Azure Pipeline
+# Build → lean Playwright smoke → deploy to Vercel only on pass.
+# On PRs: post pass/fail summary comment to GitHub.
+# Secrets (never commit):
+#   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+#   GITHUB_TOKEN (PR comments — fine-grained PAT with Pull requests: Read & Write)
+# Setup: docs/AZURE_VERCEL_SETUP.md
+# Live board + failure demo: docs/PHASE4_AND_DEMOS.md
+
+parameters:
+  - name: forceSmokeFail
+    displayName: FORCE SMOKE FAIL (interview demo — blocks deploy)
+    type: boolean
+    default: false
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  projectDir: .
+
+stages:
+  - stage: verify
+    displayName: Build and smoke
+    jobs:
+      - job: smoke
+        displayName: Install, build, smoke
+        steps:
+          - task: UseNode@1
+            inputs:
+              version: '20.x'
+            displayName: Use Node 20
+
+          - script: npm ci
+            workingDirectory: $(projectDir)
+            displayName: Install dependencies
+
+          - script: npm run build
+            workingDirectory: $(projectDir)
+            displayName: Build production bundle
+
+          - script: npx playwright install --with-deps chromium
+            workingDirectory: $(projectDir)
+            displayName: Install Playwright Chromium
+
+          - script: |
+              set -e
+              if [ "${{ parameters.forceSmokeFail }}" = "True" ]; then
+                echo "##vso[task.logissue type=error]forceSmokeFail=true — simulating a smoke failure for the release-gate demo."
+                echo "Deploy stage should be skipped. Re-run with the toggle off when finished."
+                exit 1
+              fi
+              npm run test:smoke
+            workingDirectory: $(projectDir)
+            displayName: Run lean smoke suite
+            env:
+              CI: 'true'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: $(projectDir)/dist
+              ArtifactName: release-gate-lab-dist
+              publishLocation: Container
+            displayName: Publish dist artifact
+            condition: succeededOrFailed()
+
+          - script: |
+              set -euo pipefail
+              if [ "$(Build.Reason)" != "PullRequest" ]; then
+                echo "Not a PR build; skipping GitHub comment."
+                exit 0
+              fi
+              if [ -z "${GITHUB_TOKEN:-}" ]; then
+                echo "##vso[task.logissue type=warning]GITHUB_TOKEN is not set — skipping PR comment."
+                exit 0
+              fi
+
+              export REPO="$(Build.Repository.Name)"
+              export PR_NUMBER="$(System.PullRequest.PullRequestNumber)"
+              export RUN_URL="$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
+              export BUILD_NUMBER="$(Build.BuildNumber)"
+              export JOB_STATUS="$(Agent.JobStatus)"
+
+              python3 <<'PY'
+              import json
+              import os
+              import urllib.error
+              import urllib.request
+
+              status = os.environ.get("JOB_STATUS", "")
+              run_url = os.environ["RUN_URL"]
+              build_number = os.environ["BUILD_NUMBER"]
+              repo = os.environ["REPO"]
+              pr_number = os.environ["PR_NUMBER"]
+              token = os.environ["GITHUB_TOKEN"]
+
+              if status == "Succeeded":
+                  body = (
+                      "### Release Gate Lab — smoke **passed**\n\n"
+                      "Lean Playwright suite is green.\n\n"
+                      f"- Pipeline run: [Azure build {build_number}]({run_url})\n"
+                      "- Next: deploy runs only from `main` after verify succeeds.\n\n"
+                      "_Quality as a gate, not a bottleneck._"
+                  )
+              else:
+                  body = (
+                      "### Release Gate Lab — smoke **failed**\n\n"
+                      "Deploy is blocked until smoke is green.\n\n"
+                      f"- Pipeline run: [Azure build {build_number}]({run_url})\n"
+                      "- Check the smoke job logs, fix, and re-run.\n\n"
+                      "_Gate held — bad build did not ship._"
+                  )
+
+              req = urllib.request.Request(
+                  f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
+                  data=json.dumps({"body": body}).encode("utf-8"),
+                  headers={
+                      "Authorization": f"Bearer {token}",
+                      "Accept": "application/vnd.github+json",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                      "Content-Type": "application/json",
+                      "User-Agent": "release-gate-lab-azure-pipeline",
+                  },
+                  method="POST",
+              )
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      print(f"GitHub comment posted ({resp.status})")
+              except urllib.error.HTTPError as err:
+                  detail = err.read().decode("utf-8", errors="replace")
+                  raise SystemExit(f"GitHub comment failed ({err.code}): {detail}") from err
+              PY
+            displayName: Comment pass/fail on GitHub PR
+            condition: always()
+            env:
+              GITHUB_TOKEN: $(GITHUB_TOKEN)
+
+  - stage: deploy
+    displayName: Deploy to Vercel
+    dependsOn: verify
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: vercel
+        displayName: Vercel production deploy
+        steps:
+          - task: UseNode@1
+            inputs:
+              version: '20.x'
+            displayName: Use Node 20
+
+          - script: npm ci
+            workingDirectory: $(projectDir)
+            displayName: Install dependencies
+
+          - script: npm run build
+            workingDirectory: $(projectDir)
+            displayName: Build production bundle
+
+          - script: npx vercel pull --yes --environment=production --token=$(VERCEL_TOKEN)
+            workingDirectory: $(projectDir)
+            displayName: Pull Vercel project config
+            env:
+              VERCEL_ORG_ID: $(VERCEL_ORG_ID)
+              VERCEL_PROJECT_ID: $(VERCEL_PROJECT_ID)
+
+          - script: npx vercel build --prod --token=$(VERCEL_TOKEN)
+            workingDirectory: $(projectDir)
+            displayName: Vercel build
+            env:
+              VERCEL_ORG_ID: $(VERCEL_ORG_ID)
+              VERCEL_PROJECT_ID: $(VERCEL_PROJECT_ID)
+
+          - script: npx vercel deploy --prebuilt --prod --token=$(VERCEL_TOKEN)
+            workingDirectory: $(projectDir)
+            displayName: Deploy prebuilt to Vercel
+            env:
+              VERCEL_ORG_ID: $(VERCEL_ORG_ID)
+              VERCEL_PROJECT_ID: $(VERCEL_PROJECT_ID)

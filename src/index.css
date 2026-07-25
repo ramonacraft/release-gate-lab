@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Figtree', sans-serif;
+  --ink: #14201d;
+  --ink-soft: #2f3d39;
+  --ink-muted: #5a6b66;
+  --line: rgba(20, 32, 29, 0.14);
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-strong: #f7faf8;
+  --accent: #1f7a72;
+  --accent-ink: #175e58;
+  --safe: #0f766e;
+  --safe-ink: #0b5f58;
+  --blocked: #c2410c;
+  --blocked-ink: #9a3412;
+  --glow-safe: rgba(15, 118, 110, 0.16);
+  --glow-warm: rgba(194, 65, 12, 0.1);
+  color: var(--ink);
+  background: #d7e2dd;
+  font-family: var(--font-body);
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
