@@ -9,9 +9,9 @@ type GoNoGoChecklistProps = {
 
 export function GoNoGoChecklist({ items, verdict, onToggle }: GoNoGoChecklistProps) {
   return (
-    <section className="checklist" aria-labelledby="checklist-heading">
-      <div className="checklist__intro">
-        <h2 id="checklist-heading">Go / no-go checklist</h2>
+    <section className="panel checklist" aria-labelledby="checklist-heading">
+      <div className="panel__head">
+        <h2 id="checklist-heading">✅ Go / no-go checklist</h2>
         <p>
           Human judgment sits next to the automated smoke gate. Required items must be checked
           before the board reads Ready.

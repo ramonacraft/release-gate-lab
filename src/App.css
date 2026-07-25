@@ -1,62 +1,145 @@
 .shell {
-  position: relative;
   min-height: 100vh;
-  /* Allow the page to scroll — overflow:hidden was clipping checklist + runs */
-  overflow-x: clip;
+  background: var(--bg);
 }
 
-.shell__atmosphere {
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 90% 60% at 8% -8%, var(--glow-safe), transparent 55%),
-    radial-gradient(ellipse 70% 45% at 100% 0%, var(--glow-warm), transparent 50%),
-    linear-gradient(168deg, #f3f7f5 0%, #e4ece8 48%, #d5e0db 100%);
-  z-index: 0;
+.shell__nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 24px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
 }
 
-.shell__atmosphere::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(20, 32, 29, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(20, 32, 29, 0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 72%);
-  pointer-events: none;
+.shell__nav-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
 }
 
-.shell__atmosphere::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
+.shell__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.shell__logo span[aria-hidden='true'] {
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+.shell__env-chip {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid var(--blue-b);
 }
 
 .shell__content {
-  position: relative;
-  z-index: 1;
-  width: min(1040px, calc(100% - 2rem));
+  width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;
-  padding-bottom: 3rem;
+  padding: 28px 0 40px;
 }
 
 @media (min-width: 720px) {
   .shell__content {
-    width: min(1040px, calc(100% - 3rem));
+    width: min(1120px, calc(100% - 3.5rem));
   }
 }
 
-.shell__footer {
-  padding: 1.5rem 0 0;
-  border-top: 1px solid var(--line);
+.shell__board {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
-.shell__footer p {
-  margin: 1rem 0 0;
-  font-size: 0.92rem;
+@media (min-width: 900px) {
+  .shell__board {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: stretch;
+  }
+}
+
+.panel {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.panel__head h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.panel__head p {
+  margin: 6px 0 0;
+  font-size: 12px;
   color: var(--ink-muted);
-  max-width: 40rem;
+  line-height: 1.5;
+}
+
+.shell__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 8px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.shell__footer > p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--ink-muted);
+  line-height: 1.7;
+}
+
+.shell__footer-credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 8px 14px;
+  margin-left: auto;
+  text-align: right;
+}
+
+.shell__footer-credit span {
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.shell__footer-credit a {
+  color: var(--blue);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.shell__footer-credit a:hover {
+  text-decoration: underline;
 }

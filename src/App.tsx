@@ -1,32 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { GateHero } from './components/GateHero'
 import { GoNoGoChecklist } from './components/GoNoGoChecklist'
 import { RecentRuns } from './components/RecentRuns'
 import { RiskNote } from './components/RiskNote'
 import { initialGate } from './data/mockGate'
-import { gateVerdict } from './utils/gate'
+import { buildRiskBrief, gateVerdict } from './utils/gate'
 import { fetchRecentRuns, type RunsSource } from './utils/fetchRecentRuns'
 import type { PipelineRun } from './types/gate'
 import './App.css'
 
-const RISK_NOTE_KEY = 'release-gate-lab.risk-note'
-
-function readStoredRiskNote(): string {
-  try {
-    return localStorage.getItem(RISK_NOTE_KEY) ?? ''
-  } catch {
-    return ''
-  }
-}
-
 function App() {
   const [checklist, setChecklist] = useState(initialGate.checklist)
-  const [riskNote, setRiskNote] = useState(readStoredRiskNote)
   const [runs, setRuns] = useState<PipelineRun[]>(initialGate.recentRuns)
   const [runsSource, setRunsSource] = useState<RunsSource>('mock')
   const [runsMessage, setRunsMessage] = useState('Loading pipeline runs…')
   const [runsLoading, setRunsLoading] = useState(true)
+  const latestRun = runs[0] ?? initialGate.latestRun
   const verdict = gateVerdict(checklist)
+  const riskBrief = useMemo(
+    () => buildRiskBrief(latestRun, checklist, runs),
+    [latestRun, checklist, runs],
+  )
 
   useEffect(() => {
     let active = true
@@ -50,36 +44,52 @@ function App() {
     )
   }
 
-  const handleRiskNoteChange = (value: string) => {
-    setRiskNote(value)
-    try {
-      localStorage.setItem(RISK_NOTE_KEY, value)
-    } catch {
-      // ignore quota / private mode
-    }
-  }
-
   return (
     <div className="shell">
-      <div className="shell__atmosphere" aria-hidden="true" />
+      <nav className="shell__nav" aria-label="Release Gate Lab Dashboard">
+        <div className="shell__nav-center">
+          <p className="shell__logo">
+            <span aria-hidden="true">👩‍💻</span>
+            <span>Release Gate Lab Dashboard</span>
+            <span aria-hidden="true">🤖</span>
+          </p>
+          <span className="shell__env-chip">{initialGate.environment}</span>
+        </div>
+      </nav>
+
       <div className="shell__content">
         <GateHero
-          brand={initialGate.releaseName}
           environment={initialGate.environment}
           verdict={verdict}
-          latestRun={runs[0] ?? initialGate.latestRun}
+          latestRun={latestRun}
+          checklist={checklist}
         />
-        <GoNoGoChecklist items={checklist} verdict={verdict} onToggle={handleToggle} />
-        <RiskNote value={riskNote} onChange={handleRiskNoteChange} />
+
+        <div className="shell__board">
+          <GoNoGoChecklist items={checklist} verdict={verdict} onToggle={handleToggle} />
+          <RiskNote brief={riskBrief} />
+        </div>
+
         <RecentRuns
           runs={runs}
           source={runsSource}
           message={runsMessage}
           loading={runsLoading}
         />
+
         <footer className="shell__footer">
           <p>
-            Lean gate demo — small smoke suite, human checklist, deploy only when both agree.
+            Lean gate demo — small Playwright suite, human checklist, deploy only when both agree.
+          </p>
+          <p className="shell__footer-credit">
+            <span>Ramona Bonitatis</span>
+            <a
+              href="https://github.com/ramonacraft/release-gate-lab"
+              target="_blank"
+              rel="noreferrer"
+            >
+              github.com/ramonacraft/release-gate-lab
+            </a>
           </p>
         </footer>
       </div>

@@ -1,6 +1,12 @@
 export type SmokeResult = 'passed' | 'failed' | 'running' | 'skipped'
 export type DeployResult = 'shipped' | 'blocked' | 'pending'
 
+export type FailedTestSignal = {
+  name: string
+  kpi: string
+  impact: string
+}
+
 export type PipelineRun = {
   id: string
   buildNumber: string
@@ -9,6 +15,8 @@ export type PipelineRun = {
   deploy: DeployResult
   duration: string
   startedAt: string
+  /** Present when Playwright automation failed — drives auto risk note. */
+  failedTests?: FailedTestSignal[]
 }
 
 export type ChecklistItem = {

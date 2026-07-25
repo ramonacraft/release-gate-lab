@@ -21,7 +21,8 @@ export async function fetchRecentRuns(): Promise<RunsFetchResult> {
       return {
         runs: initialGate.recentRuns,
         source: 'mock',
-        message: 'Showing mock runs — live Azure API is not configured yet.',
+        message:
+          'Demo history for walkthroughs. Azure Pipelines powers the real gate; connect live runs when ready.',
       }
     }
 
@@ -31,20 +32,22 @@ export async function fetchRecentRuns(): Promise<RunsFetchResult> {
       return {
         runs: initialGate.recentRuns,
         source: 'mock',
-        message: 'No Azure runs returned yet — showing mock history.',
+        message:
+          'Demo history for walkthroughs. Azure Pipelines powers the real gate; connect live runs when ready.',
       }
     }
 
     return {
       runs,
       source: 'live',
-      message: 'Live from Azure Pipelines.',
+      message: 'Live Azure Pipelines runs — Playwright automation results from CI.',
     }
   } catch {
     return {
       runs: initialGate.recentRuns,
       source: 'mock',
-      message: 'Showing mock runs — could not reach the live Azure API.',
+      message:
+        'Demo history for walkthroughs. Azure Pipelines powers the real gate; connect live runs when ready.',
     }
   }
 }

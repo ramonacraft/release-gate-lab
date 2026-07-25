@@ -1,25 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Syne:wght@700;800&display=swap');
 
 :root {
   --font-display: 'Syne', sans-serif;
-  --font-body: 'Figtree', sans-serif;
-  --ink: #14201d;
-  --ink-soft: #2f3d39;
-  --ink-muted: #5a6b66;
-  --line: rgba(20, 32, 29, 0.14);
-  --surface: rgba(255, 255, 255, 0.82);
-  --surface-strong: #f7faf8;
-  --accent: #1f7a72;
-  --accent-ink: #175e58;
-  --safe: #0f766e;
-  --safe-ink: #0b5f58;
-  --blocked: #c2410c;
-  --blocked-ink: #9a3412;
-  --glow-safe: rgba(15, 118, 110, 0.16);
-  --glow-warm: rgba(194, 65, 12, 0.1);
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --bg: #f4f6fb;
+  --bg2: #ffffff;
+  --bg3: #ffffff;
+  --bg4: #f4f6fb;
+  --bg5: #ebeef5;
+  --border: rgba(0, 0, 0, 0.08);
+  --border2: rgba(0, 0, 0, 0.15);
+  --ink: #111827;
+  --ink-soft: #374151;
+  --ink-muted: #6b7280;
+  --blue: #0284c7;
+  --blue-soft: rgba(2, 132, 199, 0.1);
+  --blue-b: rgba(2, 132, 199, 0.25);
+  --teal: #0d9488;
+  --teal-soft: rgba(13, 148, 136, 0.1);
+  --teal-b: rgba(13, 148, 136, 0.25);
+  --emerald: #059669;
+  --emerald-soft: rgba(5, 150, 105, 0.1);
+  --emerald-b: rgba(5, 150, 105, 0.3);
+  --amber: #d97706;
+  --amber-soft: rgba(217, 119, 6, 0.1);
+  --amber-b: rgba(217, 119, 6, 0.25);
+  --rose: #e11d48;
+  --rose-soft: rgba(225, 29, 72, 0.1);
+  --rose-b: rgba(225, 29, 72, 0.25);
+  --safe: var(--teal);
+  --safe-ink: #0f766e;
+  --blocked: var(--rose);
+  --blocked-ink: #be123c;
+  --accent: var(--blue);
+  --accent-ink: #0369a1;
+  --line: var(--border);
+  --surface: var(--bg3);
+  --surface-strong: var(--bg4);
   color: var(--ink);
-  background: #d7e2dd;
+  background: var(--bg);
   font-family: var(--font-body);
+  font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -41,13 +62,15 @@ body,
 
 body {
   min-height: 100vh;
+  background: var(--bg);
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
 a {
-  color: inherit;
+  color: var(--blue);
 }

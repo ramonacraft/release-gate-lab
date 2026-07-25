@@ -1,30 +1,39 @@
+import type { RiskBrief } from '../utils/gate'
 import './RiskNote.css'
 
 type RiskNoteProps = {
-  value: string
-  onChange: (value: string) => void
+  brief: RiskBrief
 }
 
-export function RiskNote({ value, onChange }: RiskNoteProps) {
+export function RiskNote({ brief }: RiskNoteProps) {
   return (
-    <section className="risk-note" aria-labelledby="risk-note-heading">
-      <div className="risk-note__intro">
-        <h2 id="risk-note-heading">Risk note</h2>
-        <p>Why this release is risky — or why it is not. Short judgment call for the go / no-go.</p>
+    <section
+      className={`panel risk-note risk-note--${brief.tone}`}
+      aria-labelledby="risk-note-heading"
+      data-testid="risk-note"
+    >
+      <div className="panel__head">
+        <p className="risk-note__eyebrow">{brief.eyebrow}</p>
+        <h2 id="risk-note-heading">{brief.title}</h2>
+        <p>{brief.summary}</p>
       </div>
 
-      <label className="risk-note__field">
-        <span className="risk-note__label">Release risk call</span>
-        <textarea
-          data-testid="risk-note"
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          rows={4}
-          maxLength={400}
-          placeholder="Example: Low risk — smoke green, small UI polish only, rollback is redeploy previous Vercel build."
-        />
-        <span className="risk-note__count">{value.length}/400</span>
-      </label>
+      <div className="risk-note__impacts">
+        <p className="risk-note__label">KPI impact</p>
+        <ul>
+          {brief.impacts.map((item) => (
+            <li key={`${item.kpi}-${item.detail}`} className={`risk-impact risk-impact--${item.level}`}>
+              <span className="risk-impact__kpi">{item.kpi}</span>
+              <span className="risk-impact__level">{item.level}</span>
+              <p>{item.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p className="risk-note__action">
+        <strong>Next:</strong> {brief.action}
+      </p>
     </section>
   )
 }

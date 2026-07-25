@@ -1,86 +1,117 @@
 .risk-note {
-  display: grid;
-  gap: 1.5rem;
-  padding: 2.25rem 0 1.25rem;
-  border-top: 1px solid var(--line);
-  animation: section-fade 0.65s ease-out 0.28s both;
+  animation: rise 0.55s ease-out 0.12s both;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-@media (min-width: 840px) {
-  .risk-note {
-    grid-template-columns: minmax(14rem, 0.85fr) 1.45fr;
-    gap: 2.75rem;
-    align-items: start;
-  }
-}
-
-.risk-note__intro h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.45rem, 2.5vw, 1.9rem);
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  color: var(--ink);
-}
-
-.risk-note__intro p {
-  margin: 0.8rem 0 0;
-  max-width: 28rem;
+.risk-note__eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--ink-soft);
-  line-height: 1.55;
 }
 
-.risk-note__field {
-  display: grid;
-  gap: 0.55rem;
-  min-width: 0;
+.risk-note--failure {
+  border-color: var(--rose-b);
+  background: linear-gradient(180deg, var(--rose-soft), var(--bg3) 42%);
+}
+
+.risk-note--human-gate {
+  border-color: var(--amber-b);
+  background: linear-gradient(180deg, var(--amber-soft), var(--bg3) 42%);
+}
+
+.risk-note--clear {
+  border-color: var(--teal-b);
+  background: linear-gradient(180deg, var(--teal-soft), var(--bg3) 42%);
 }
 
 .risk-note__label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  margin: 0 0 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
 }
 
-.risk-note__field textarea {
-  width: 100%;
-  resize: vertical;
-  min-height: 7rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  backdrop-filter: blur(6px);
+.risk-note__impacts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.risk-impact {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.risk-impact__kpi {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--ink);
-  line-height: 1.5;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  margin-right: 8px;
 }
 
-.risk-note__field textarea::placeholder {
-  color: color-mix(in srgb, var(--ink-muted) 80%, transparent);
+.risk-impact__level {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
 }
 
-.risk-note__field textarea:hover {
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+.risk-impact--high .risk-impact__level {
+  background: var(--rose-soft);
+  color: var(--rose);
+  border: 1px solid var(--rose-b);
 }
 
-.risk-note__field textarea:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  background: var(--surface);
+.risk-impact--med .risk-impact__level {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber-b);
 }
 
-.risk-note__count {
-  justify-self: end;
-  font-size: 0.8rem;
-  color: var(--ink-muted);
+.risk-impact--low .risk-impact__level {
+  background: var(--teal-soft);
+  color: var(--teal);
+  border: 1px solid var(--teal-b);
 }
 
-@keyframes section-fade {
+.risk-impact p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.risk-note__action {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--bg4);
+  border-left: 3px solid var(--blue-b);
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.risk-note__action strong {
+  color: var(--ink);
+}
+
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;

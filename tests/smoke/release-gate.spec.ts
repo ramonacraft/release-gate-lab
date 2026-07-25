@@ -8,9 +8,9 @@ test.describe('Release Gate Lab smoke', () => {
   test('homepage shows brand and gate verdict', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByText('Release Gate Lab', { exact: true }).first()).toBeVisible()
+    await expect(page.getByText('Release Gate Lab Dashboard', { exact: true }).first()).toBeVisible()
     await expect(page.getByTestId('gate-verdict')).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Go / no-go checklist' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Go \/ no-go checklist/i })).toBeVisible()
   })
 
   test('checklist rollup starts as Not ready until owner signs off', async ({ page }) => {
@@ -34,13 +34,18 @@ test.describe('Release Gate Lab smoke', () => {
     await expect(page.getByTestId('gate-verdict')).toHaveText('Not ready')
   })
 
-  test('risk note accepts a short judgment call', async ({ page }) => {
+  test('risk note auto-fills for developers from gate signals', async ({ page }) => {
     await page.goto('/')
 
     const note = page.getByTestId('risk-note')
     await expect(note).toBeVisible()
-    await note.fill('Low risk — smoke green, UI polish only.')
-    await expect(note).toHaveValue('Low risk — smoke green, UI polish only.')
+    // Latest mock run is green; open human gate drives the auto brief.
+    await expect(note).toContainText('Human gate open')
+    await expect(note).toContainText('KPI impact')
+    await expect(note).toContainText('Revenue continuity')
+
+    await page.getByTestId('check-owner').check()
+    await expect(note).toContainText('Gate clear')
   })
 
   test('recent runs table lists builds with a source badge', async ({ page }) => {
@@ -48,7 +53,7 @@ test.describe('Release Gate Lab smoke', () => {
 
     await expect(page.getByRole('heading', { name: 'Recent runs' })).toBeVisible()
     await expect(page.getByTestId('runs-source')).toBeVisible()
-    // Local preview has no Azure API — mock fallback still shows blocked deploy story.
     await expect(page.getByTestId('run-1041')).toContainText('Deploy blocked')
+    await expect(page.getByTestId('run-1042')).toContainText('Ready to ship')
   })
 })

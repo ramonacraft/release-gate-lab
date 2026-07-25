@@ -14,10 +14,12 @@ export function RecentRuns({ runs, source, message, loading }: RecentRunsProps) 
   return (
     <section className="recent-runs" aria-labelledby="recent-runs-heading">
       <div className="recent-runs__intro">
-        <h2 id="recent-runs-heading">Recent runs</h2>
-        <p data-testid="runs-source-message">{loading ? 'Loading pipeline runs…' : message}</p>
+        <div>
+          <h2 id="recent-runs-heading">Recent runs</h2>
+          <p data-testid="runs-source-message">{loading ? 'Loading pipeline runs…' : message}</p>
+        </div>
         <p className={`recent-runs__badge recent-runs__badge--${source}`} data-testid="runs-source">
-          {loading ? 'Loading' : source === 'live' ? 'Live Azure' : 'Mock data'}
+          {loading ? 'Loading' : source === 'live' ? 'Live Azure' : 'Demo data'}
         </p>
       </div>
 
@@ -25,7 +27,7 @@ export function RecentRuns({ runs, source, message, loading }: RecentRunsProps) 
         <table className="recent-runs__table">
           <thead>
             <tr>
-              <th scope="col">Build</th>
+              <th scope="col">Azure build</th>
               <th scope="col">Branch</th>
               <th scope="col">Smoke</th>
               <th scope="col">Deploy</th>
@@ -34,8 +36,16 @@ export function RecentRuns({ runs, source, message, loading }: RecentRunsProps) 
           </thead>
           <tbody>
             {runs.map((run) => (
-              <tr key={run.id} data-testid={run.id}>
-                <td>{run.buildNumber}</td>
+              <tr
+                key={run.id}
+                data-testid={run.id}
+                className={
+                  run.deploy === 'blocked' || run.smoke === 'failed'
+                    ? 'row-risk-high'
+                    : undefined
+                }
+              >
+                <td className="mono">{run.buildNumber}</td>
                 <td>{run.branch}</td>
                 <td>
                   <span className={`run-result run-result--${run.smoke}`}>
@@ -47,7 +57,7 @@ export function RecentRuns({ runs, source, message, loading }: RecentRunsProps) 
                     {deployLabel(run.deploy)}
                   </span>
                 </td>
-                <td>{run.duration}</td>
+                <td className="mono">{run.duration}</td>
               </tr>
             ))}
           </tbody>
