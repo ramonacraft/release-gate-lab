@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="260" viewBox="0 0 980 260" role="img">
+  <rect width="980" height="260" fill="#0f172a" rx="16"/>
+  <text x="120" y="34" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" text-anchor="middle">1. Delivery change</text>
+  <text x="370" y="34" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" text-anchor="middle">2. What to verify</text>
+  <text x="620" y="34" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" text-anchor="middle">3. Quality gate</text>
+  <text x="860" y="34" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" text-anchor="middle">4. Go / no-go</text>
+
+  <rect x="30" y="64" width="110" height="48" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="85" y="94" fill="#0f172a" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="700" text-anchor="middle">Jira</text>
+  <rect x="30" y="128" width="110" height="48" rx="12" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <text x="85" y="158" fill="#0f172a" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="700" text-anchor="middle">GitHub PR</text>
+
+  <path d="M140 88 C180 88, 200 110, 240 118" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+  <path d="M140 152 C180 152, 200 130, 240 124" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+  <polygon points="240,121 228,115 228,127" fill="#94a3b8"/>
+
+  <rect x="250" y="96" width="160" height="52" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="330" y="128" fill="#0f172a" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="700" text-anchor="middle">ForgeQA + MCP</text>
+
+  <line x1="410" y1="122" x2="450" y2="122" stroke="#94a3b8" stroke-width="2.5"/>
+  <polygon points="450,122 438,116 438,128" fill="#94a3b8"/>
+
+  <rect x="460" y="96" width="170" height="52" rx="12" fill="#ccfbf1" stroke="#0d9488" stroke-width="2"/>
+  <text x="545" y="128" fill="#0f172a" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="700" text-anchor="middle">Azure Playwright</text>
+
+  <line x1="630" y1="122" x2="680" y2="122" stroke="#94a3b8" stroke-width="2.5"/>
+  <polygon points="680,122 668,116 668,128" fill="#94a3b8"/>
+
+  <rect x="690" y="70" width="140" height="44" rx="12" fill="#d1fae5" stroke="#059669" stroke-width="2"/>
+  <text x="760" y="98" fill="#0f172a" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" text-anchor="middle">Deploy (green)</text>
+  <rect x="690" y="128" width="140" height="44" rx="12" fill="#ffe4e6" stroke="#e11d48" stroke-width="2"/>
+  <text x="760" y="156" fill="#0f172a" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" text-anchor="middle">Hold (red)</text>
+
+  <line x1="830" y1="122" x2="860" y2="122" stroke="#94a3b8" stroke-width="2.5"/>
+  <polygon points="860,122 848,116 848,128" fill="#94a3b8"/>
+
+  <rect x="870" y="96" width="90" height="52" rx="12" fill="#f4f6fb" stroke="#64748b" stroke-width="2"/>
+  <text x="915" y="128" fill="#0f172a" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" text-anchor="middle">Board</text>
+
+  <text x="85" y="230" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" text-anchor="middle">Ticket + change</text>
+  <text x="330" y="230" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" text-anchor="middle">Aim the suite</text>
+  <text x="545" y="230" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" text-anchor="middle">Ship or block</text>
+  <text x="860" y="230" fill="#64748b" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" text-anchor="middle">Human read</text>
+</svg>

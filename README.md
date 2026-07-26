@@ -1,4 +1,4 @@
-# Release Gate Lab
+# 🚦 Release Gate Lab
 
 A **Release Gate dashboard** plus a **lean Azure Pipeline** that only deploys to Vercel when a small Playwright smoke suite passes.
 
@@ -41,81 +41,23 @@ When work starts from a **Jira ticket**, a developer opens a **GitHub PR**. Forg
 - What risk signal should a developer review (especially on failures)?
 - What do recent Azure builds show?
 
-## System flow
+## How the flow works
 
-```mermaid
-flowchart TB
-  subgraph intake ["1 · Delivery change"]
-    Jira["Jira ticket<br/>AC + status"]
-    PR["GitHub PR<br/>code change"]
-    Jira -->|"implements"| PR
-  end
+![How Release Gate Lab fits the delivery loop](docs/flow.png)
 
-  subgraph intelligence ["2 · ForgeQA + MCP"]
-    MCP["MCP context<br/>PR + codebase"]
-    Suggest["Risk-ranked / suggested tests"]
-    PR --> MCP --> Suggest
-  end
-
-  subgraph gate ["3 · Azure quality gate"]
-    Build["Install + build"]
-    Smoke["Playwright automation"]
-    Comment["PR comment<br/>pass / fail"]
-    Suggest -->|"aims the suite"| Smoke
-    PR --> Build --> Smoke
-    Smoke -->|"PR builds"| Comment
-  end
-
-  subgraph ship ["4 · Ship or hold"]
-    Deploy["Deploy to Vercel"]
-    Block["Block deploy"]
-    Live["Production URL"]
-    Smoke -->|"main + green"| Deploy --> Live
-    Smoke -->|"red"| Block
-  end
-
-  subgraph board ["5 · Release Gate dashboard"]
-    Verdict["Safe to ship / Not ready"]
-    Checks["Go / no-go + risk brief"]
-    History["Azure build history"]
-    Smoke -->|"results feed"| Verdict
-    Verdict --- Checks
-    Checks --- History
-    Jira -.->|"ticket context for humans"| Verdict
-    Live -.->|"same story"| Verdict
-  end
-
-  style Jira fill:#dbeafe,stroke:#2563eb,color:#0f172a
-  style PR fill:#e0f2fe,stroke:#0284c7,color:#0f172a
-  style MCP fill:#fef3c7,stroke:#d97706,color:#0f172a
-  style Suggest fill:#fef3c7,stroke:#d97706,color:#0f172a
-  style Build fill:#ccfbf1,stroke:#0d9488,color:#0f172a
-  style Smoke fill:#ccfbf1,stroke:#0d9488,color:#0f172a
-  style Comment fill:#ccfbf1,stroke:#0d9488,color:#0f172a
-  style Deploy fill:#d1fae5,stroke:#059669,color:#0f172a
-  style Live fill:#d1fae5,stroke:#059669,color:#0f172a
-  style Block fill:#ffe4e6,stroke:#e11d48,color:#0f172a
-  style Verdict fill:#f4f6fb,stroke:#64748b,color:#0f172a
-  style Checks fill:#f4f6fb,stroke:#64748b,color:#0f172a
-  style History fill:#f4f6fb,stroke:#64748b,color:#0f172a
-```
+| Step | Color | What it is |
+|------|-------|------------|
+| **1. Delivery change** | Blue | Jira ticket + GitHub PR |
+| **2. What to verify** | Amber | ForgeQA + MCP aims the suite |
+| **3. Quality gate** | Teal | Azure + Playwright → deploy or hold |
+| **4. Go / no-go** | Gray / green / red | This dashboard for human read |
 
 ### Happy path vs gate hold
 
-```mermaid
-flowchart LR
-  Start["Pipeline starts"] --> Verify["Build + Playwright"]
-  Verify -->|"green on main"| Ship["Deploy runs"]
-  Verify -->|"red or demo fail"| Hold["Deploy skipped"]
-  Ship --> Live["Vercel updates"]
-  Hold --> Fix["Fix and re-run"]
-
-  style Start fill:#e0f2fe,stroke:#0284c7,color:#0f172a
-  style Verify fill:#ccfbf1,stroke:#0d9488,color:#0f172a
-  style Ship fill:#d1fae5,stroke:#059669,color:#0f172a
-  style Live fill:#d1fae5,stroke:#059669,color:#0f172a
-  style Hold fill:#ffe4e6,stroke:#e11d48,color:#0f172a
-  style Fix fill:#ffedd5,stroke:#d97706,color:#0f172a
+```text
+Pipeline starts → Build + Playwright
+  → green on main → Deploy to Vercel
+  → red or demo fail → Deploy skipped → Fix and re-run
 ```
 
 ## What’s in the dashboard
@@ -177,8 +119,12 @@ Jira ticket → GitHub PR
 
 - No 100+ test suite  
 - No Mac Mini / device farm  
-- No giant pre-prod matrix that slows every PR  
+- No giant pre-prod matrix that slows every PR
 
-## Privacy
+## Notes / Privacy
 
-Do not commit `.env`, Vercel tokens, Azure PATs, or GitHub tokens.
+- **Published by** [Ramona Bonitatis](https://github.com/ramonacraft).
+- **Default: no secrets.** The app and docs run with an empty or commented `.env`. `.env.example` has no real tokens.
+- Azure PATs, Vercel tokens, and GitHub tokens belong only in host secret stores (Azure Pipeline secrets, Vercel env) — never committed here.
+- Live demo may show Azure builds when those host secrets are configured; otherwise the board uses safe demo data.
+
