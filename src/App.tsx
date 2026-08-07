@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { GateHero } from './components/GateHero'
 import { GoNoGoChecklist } from './components/GoNoGoChecklist'
 import { RecentRuns } from './components/RecentRuns'
@@ -93,6 +94,7 @@ function App() {
           </p>
         </footer>
       </div>
+      <Analytics />
     </div>
   )
 }
