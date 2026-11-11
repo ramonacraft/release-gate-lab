@@ -3,5 +3,9 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm ci"
+  "installCommand": "npm ci",
+  "rewrites": [
+    { "source": "/watch/(.*)", "destination": "/index.html" },
+    { "source": "/watch", "destination": "/index.html" }
+  ]
 }
