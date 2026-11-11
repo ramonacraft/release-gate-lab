@@ -21,6 +21,12 @@ dist-ssr
 /blob-report/
 /playwright/.cache/
 
+# Maven (jd-harness)
+jd-harness/target/
+jd-harness/.classpath
+jd-harness/.project
+jd-harness/.settings/
+
 # Vercel
 .vercel
 

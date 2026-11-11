@@ -72,9 +72,10 @@ Pipeline starts → Build + Playwright
 | Layer | Choice |
 |-------|--------|
 | App | Vite + React + TypeScript |
-| Smokes | Playwright (lean suite) |
-| CI | Azure Pipelines |
-| Host + API | Vercel (`/api/runs` proxies Azure) |
+| Smokes (gate) | Playwright (lean suite) |
+| JD practice harness | Java Maven + TestNG + Selenium in [`jd-harness/`](jd-harness/) |
+| CI | Azure Pipelines (Playwright gate) |
+| Host + API | Vercel (`/api/runs` proxies Azure; `/api/qoe` demo metrics) |
 | Architecture partners | Jira (ticket system of record), ForgeQA + MCP (test intelligence) |
 
 ## Quick start
@@ -88,16 +89,52 @@ npm run dev
 
 Open the URL Vite prints (usually `http://localhost:5173`).
 
+- Release Gate dashboard: `/`
+- Stream Practice (app under test for JD harness): `/watch`
+
 ```bash
 npm run build
 npx playwright install chromium
 npm run test:smoke
 ```
 
+## JD harness practice (TestNG + Selenium)
+
+Interview-shaped loop for Client Apps QA Manager language. **Vercel hosts the app under test; TestNG runs on your machine (or Jenkins), not on Vercel.**
+
+| JD piece | In this repo |
+|----------|--------------|
+| TestNG groups (`smoke` / `regression`) | `jd-harness/` + `testng-smoke.xml` / `testng-regression.xml` |
+| Selenium WebDriver | Chrome against `/watch` (home → title → Play) |
+| Java + Maven | `jd-harness/pom.xml` → `mvn test` |
+| Jenkins + Git | Same `mvn` command in CI (not wired here) |
+| TestRail | Talk track only — map case IDs to `@Test` / publish results |
+| Appium / CTV | Stub notes in `DriverFactory` — **no real device coverage claimed** |
+| Conviva / Mux | Separate QoE story; `/api/qoe` is a demo JSON stand-in |
+
+```bash
+# Terminal 1 — app under test
+npm run build && npm run preview -- --host 127.0.0.1 --port 4173
+
+# Terminal 2 — harness
+cd jd-harness
+mvn test -DsuiteXmlFile=testng-smoke.xml -DbaseUrl=http://127.0.0.1:4173
+```
+
+Against the live deploy (after this branch is on Vercel):
+
+```bash
+cd jd-harness
+mvn test -DsuiteXmlFile=testng-smoke.xml -DbaseUrl=https://release-gate-lab.vercel.app
+```
+
+Full detail: [jd-harness/README.md](jd-harness/README.md).
+
 ## Docs
 
 | Doc | What |
 |-----|------|
+| [jd-harness/README.md](jd-harness/README.md) | TestNG/Selenium runbook + JD vocabulary map |
 | [docs/AZURE_VERCEL_SETUP.md](docs/AZURE_VERCEL_SETUP.md) | Connect Azure → Vercel secrets |
 | [docs/PHASE4_AND_DEMOS.md](docs/PHASE4_AND_DEMOS.md) | Live Azure board, PR comments, failure-path demo |
 
