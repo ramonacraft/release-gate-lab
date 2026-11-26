@@ -72,9 +72,10 @@ Pipeline starts → Build + Playwright
 | Layer | Choice |
 |-------|--------|
 | App | Vite + React + TypeScript |
-| Smokes | Playwright (lean suite) |
-| CI | Azure Pipelines |
-| Host + API | Vercel (`/api/runs` proxies Azure) |
+| Smokes (gate) | Playwright (lean suite) |
+| Web smoke harness | Java Maven + TestNG + Selenium in [`testng-harness/`](testng-harness/) |
+| CI | Azure Pipelines (Playwright gate) |
+| Host + API | Vercel (`/api/runs` proxies Azure; `/api/qoe` demo metrics) |
 | Architecture partners | Jira (ticket system of record), ForgeQA + MCP (test intelligence) |
 
 ## Quick start
@@ -88,16 +89,50 @@ npm run dev
 
 Open the URL Vite prints (usually `http://localhost:5173`).
 
+- Release Gate dashboard: `/`
+- Stream Practice (app under test for TestNG/Selenium): `/watch`
+
 ```bash
 npm run build
 npx playwright install chromium
 npm run test:smoke
 ```
 
+## TestNG + Selenium web smoke
+
+Lean practice loop: **Vercel hosts the app under test; TestNG runs on your machine (or CI), not on Vercel.**
+
+| Piece | In this repo |
+|-------|--------------|
+| TestNG groups (`smoke` / `regression`) | `testng-harness/` + suite XML files |
+| Selenium WebDriver | Chrome against `/watch` (home → title → Play) |
+| Java + Maven | `testng-harness/pom.xml` → `mvn test` |
+| Device automation | Stub notes in `DriverFactory` — no real device coverage claimed |
+| Stream-health sample | `/api/qoe` demo JSON (optional; UI asserts do not depend on it) |
+
+```bash
+# Terminal 1 — app under test
+npm run build && npm run preview -- --host 127.0.0.1 --port 4173
+
+# Terminal 2 — harness
+cd testng-harness
+mvn test -DsuiteXmlFile=testng-smoke.xml -DbaseUrl=http://127.0.0.1:4173
+```
+
+Against the live deploy (after `/watch` is on Vercel):
+
+```bash
+cd testng-harness
+mvn test -DsuiteXmlFile=testng-smoke.xml -DbaseUrl=https://release-gate-lab.vercel.app
+```
+
+Full detail: [testng-harness/README.md](testng-harness/README.md).
+
 ## Docs
 
 | Doc | What |
 |-----|------|
+| [testng-harness/README.md](testng-harness/README.md) | TestNG/Selenium runbook |
 | [docs/AZURE_VERCEL_SETUP.md](docs/AZURE_VERCEL_SETUP.md) | Connect Azure → Vercel secrets |
 | [docs/PHASE4_AND_DEMOS.md](docs/PHASE4_AND_DEMOS.md) | Live Azure board, PR comments, failure-path demo |
 

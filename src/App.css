@@ -55,6 +55,17 @@
   border: 1px solid var(--blue-b);
 }
 
+.shell__watch-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.shell__watch-link:hover {
+  color: var(--teal);
+}
+
 .shell__content {
   width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;

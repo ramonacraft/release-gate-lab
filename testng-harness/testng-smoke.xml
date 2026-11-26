@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Web smoke" verbose="1">
+  <test name="Playback smoke">
+    <groups>
+      <run>
+        <include name="smoke"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.ramonacraft.websmoke.tests.smoke.PlaybackSmokeTest"/>
+    </classes>
+  </test>
+</suite>

@@ -55,6 +55,9 @@ function App() {
             <span aria-hidden="true">🤖</span>
           </p>
           <span className="shell__env-chip">{initialGate.environment}</span>
+          <a className="shell__watch-link" href="/watch">
+            Stream Practice demo
+          </a>
         </div>
       </nav>
 

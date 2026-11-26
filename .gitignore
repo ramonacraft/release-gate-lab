@@ -21,6 +21,12 @@ dist-ssr
 /blob-report/
 /playwright/.cache/
 
+# Maven (testng-harness)
+testng-harness/target/
+testng-harness/.classpath
+testng-harness/.project
+testng-harness/.settings/
+
 # Vercel
 .vercel
 

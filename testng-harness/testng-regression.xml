@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Web regression sample" verbose="1">
+  <test name="Title metadata regression sample">
+    <groups>
+      <run>
+        <include name="regression"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.ramonacraft.websmoke.tests.regression.TitleMetadataRegressionTest"/>
+    </classes>
+  </test>
+</suite>
